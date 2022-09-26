@@ -7,5 +7,8 @@ public class Apple : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Destroy(gameObject);
+
+        GameManager.Instance.SpawnAplle();
     }
 }
+

@@ -13,6 +13,8 @@ public class Snake : MonoBehaviour
     private const int _step = 2;
     private Vector2 _direction;
     private Vector2 _previosPosition;
+
+
     private void Start()
     {
         _direction = Vector2.right / _step;
