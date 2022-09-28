@@ -20,9 +20,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private RectTransform _boardSpawn;
     [SerializeField] private Apple _applePrefub;
-
-    private List<float> _positionsY;
-    private List<float> _positionsX;
+    [SerializeField] private List<float> _positionsY;
+    [SerializeField] private List<float> _positionsX;
 
 
     private void Awake()
