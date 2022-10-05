@@ -7,13 +7,14 @@ public class Snake : MonoBehaviour
     [SerializeField] private float _delayForNextStepSnake;
     [SerializeField] private Transform _tailSnakePrefab;
     [SerializeField] private RectTransform _gameBoard;
-    [SerializeField] List<Transform> _tailSnake;
-    [SerializeField] List<Vector2> _tailSnakeListPosition;
+    [SerializeField] private List<Transform> _tailSnake;
 
     private Vector2 _direction;
     private Vector2 _previosPosition;
 
     private const int _step = 2;
+
+    public List<Vector2> TailSnakeListPosition;
 
 
     private void Start()
@@ -29,7 +30,7 @@ public class Snake : MonoBehaviour
 
         for (int i = 0; i < _tailSnake.Count; i++)
         {
-            _tailSnake[i].position = _tailSnakeListPosition[i];
+            _tailSnake[i].position = TailSnakeListPosition[i];
         }
     }
 
@@ -43,15 +44,16 @@ public class Snake : MonoBehaviour
 
             _previosPosition = transform.position;
 
-            if (_tailSnakeListPosition.Count < _tailSnake.Count + 1)
+            if (TailSnakeListPosition.Count < _tailSnake.Count + 1)
             {
-                _tailSnakeListPosition.Add(_previosPosition);
+                TailSnakeListPosition.Add(_previosPosition);
             }
             else
             {
-                _tailSnakeListPosition.RemoveAt(0);
-                _tailSnakeListPosition.Add(_previosPosition);
+                TailSnakeListPosition.RemoveAt(0);
+                TailSnakeListPosition.Add(_previosPosition);
             }
+
 
             yield return new WaitForSeconds(_delayForNextStepSnake);
 
@@ -94,7 +96,7 @@ public class Snake : MonoBehaviour
         {
             GameManager.Instance.ActivateMenuForRestart();
         }
-        if (apple)
+        else
         {
             GrowSnake();
             GameManager.Instance.IncreaseScore();

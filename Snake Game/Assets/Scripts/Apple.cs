@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Apple : MonoBehaviour
@@ -23,10 +21,7 @@ public class Apple : MonoBehaviour
         }
         else
         {
-            SpaenDeathEffect();
-            Destroy(gameObject);
-
-            GameManager.Instance.SpawnAplle();
+            AppleDestroy();
         }
         if (_timerForDestroy < 4)
         {
@@ -36,10 +31,16 @@ public class Apple : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        AppleDestroy();
+    }
+
+    private void AppleDestroy()
+    {
         SpaenDeathEffect();
+        GameManager.Instance.AppleWasDestroyed();
         Destroy(gameObject);
 
-        GameManager.Instance.SpawnAplle();
+        GameManager.Instance.SpawnApples();
     }
 
     private void SpaenDeathEffect()

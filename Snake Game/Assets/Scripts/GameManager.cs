@@ -21,14 +21,16 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private RectTransform _boardSpawn;
     [SerializeField] private Apple _applePrefub;
-    [SerializeField] private List<float> _positionsY;
-    [SerializeField] private List<float> _positionsX;
     [SerializeField] private Text _scoreText;
     [SerializeField] private GameObject _menuPanel;
     [SerializeField] private GameObject _gameOverText;
     [SerializeField] private Button _startGameButton;
+    [SerializeField] private List<Vector2> _possitionForSpawnList;
+    [SerializeField] private Snake _listPosSnakeTail;
 
     private int _score;
+    private Vector2 _positionsForSpawnApple;
+    private int _counterApples;
 
     static bool _gameIsPlaying = true;
 
@@ -54,18 +56,8 @@ public class GameManager : MonoBehaviour
             _gameOverText.SetActive(false);
         }
 
-        for (float i = _minY; i <= _maxY;)
-        {
-            _positionsY.Add(i);
-            i += 0.5f;
-        }
-        for (float j = _minX; j <= _maxX;)
-        {
-            _positionsX.Add(j);
-            j += 0.5f;
-        }
-
-        SpawnAplle();
+        TakeCardinatsForSpawn();
+        SpawnApples();
     }
 
     private void OnDestroy()
@@ -76,13 +68,62 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SpawnAplle()
+    private void TakeCardinatsForSpawn()
     {
-        var aplle = Instantiate(_applePrefub,
-            new Vector2(_positionsX[Random.Range(0, _positionsX.Count)],
-            _positionsY[Random.Range(0, _positionsY.Count)]),
-            Quaternion.identity);
+        for (float i = _minY; i <= _maxY; i += 0.5f)
+        {
+            var posY = i;
+
+            for (float j = _minX; j <= _maxX; j += 0.5f)
+            {
+                var posX = j;
+                var position = new Vector2(posX, posY);
+
+                _possitionForSpawnList.Add(position);
+            }
+        }
+    }
+
+    private void TakePositionForSpawnApple()
+    {
+        _positionsForSpawnApple = _possitionForSpawnList[Random.Range(0, _possitionForSpawnList.Count)];
+
+        for (int i = 0; i<= _listPosSnakeTail.TailSnakeListPosition.Count - 1; i++)
+        {
+            var position = _listPosSnakeTail.TailSnakeListPosition[i];
+            if(_positionsForSpawnApple == position)
+            {
+                TakePositionForSpawnApple();
+            }
+        }
+    }
+
+    private void SpawnOneApple()
+    {
+        TakePositionForSpawnApple();
+
+        var aplle = Instantiate(_applePrefub, _positionsForSpawnApple, Quaternion.identity);
         aplle.transform.SetParent(_boardSpawn.transform, false);
+
+        _counterApples++;
+    }
+
+    public void SpawnApples()
+    {
+        if(_counterApples == 0)
+        {
+            SpawnOneApple();
+        }
+
+        if (Random.Range(0, 5) == 0 && _counterApples < 2)
+        {
+            SpawnOneApple();
+        }
+    }
+
+    public void AppleWasDestroyed()
+    {
+        _counterApples--;
     }
 
     public void IncreaseScore()

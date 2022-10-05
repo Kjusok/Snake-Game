@@ -1481,12 +1481,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardSpawn: {fileID: 208920266}
   _applePrefub: {fileID: 3674984064131652390, guid: 5d9adeca97654904eb9fd4ce7e4a0ff5, type: 3}
-  _positionsY: []
-  _positionsX: []
   _scoreText: {fileID: 307445928}
   _menuPanel: {fileID: 272346650}
   _gameOverText: {fileID: 1653946679}
   _startGameButton: {fileID: 1653946680}
+  _possitionForSpawnList: []
+  _listPosSnakeTail: {fileID: 1800949393}
 --- !u!95 &772808404
 Animator:
   serializedVersion: 3
@@ -2233,7 +2233,7 @@ MonoBehaviour:
   _gameBoard: {fileID: 208920266}
   _tailSnake:
   - {fileID: 421470148}
-  _tailSnakeListPosition: []
+  TailSnakeListPosition: []
 --- !u!61 &1800949394
 BoxCollider2D:
   m_ObjectHideFlags: 0
