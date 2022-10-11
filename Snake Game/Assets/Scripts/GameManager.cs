@@ -24,21 +24,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text _scoreText;
     [SerializeField] private GameObject _menuPanel;
     [SerializeField] private GameObject _gameOverText;
-    [SerializeField] private Button _startGameButton;
     [SerializeField] private List<Vector2> _possitionForSpawnList;
     [SerializeField] private Snake _listPosSnakeTail;
 
+    private bool _isPaused;
     private int _score;
     private Vector2 _positionsForSpawnApple;
     private int _counterApples;
 
+    private const float MaxBoardY = 4.25f;
+    private const float MinBoardY = -4.25f;
+    private const float MaxBoardX = 8.25f;
+    private const float MinBoardX = -8.25f;
+    private const float DropPercentage = 0.2f;
+
     static bool _gameIsPlaying = true;
 
-    private const float _maxY = 4.25f;
-    private const float _minY = -4.25f;
-    private const float _maxX = 8.25f;
-    private const float _minX = -8.25f;
-
+    public bool GameIsPaused => _isPaused;
     private void Awake()
     {
         _instance = this;
@@ -46,12 +48,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 0;
+        _isPaused = true;
 
         if (!_gameIsPlaying)
         {
-            Time.timeScale = 1;
-
+            _isPaused = false;
             _menuPanel.SetActive(false);
             _gameOverText.SetActive(false);
         }
@@ -70,11 +71,11 @@ public class GameManager : MonoBehaviour
 
     private void TakeCardinatsForSpawn()
     {
-        for (float i = _minY; i <= _maxY; i += 0.5f)
+        for (float i = MinBoardY; i <= MaxBoardY; i += 0.5f)
         {
             var posY = i;
 
-            for (float j = _minX; j <= _maxX; j += 0.5f)
+            for (float j = MinBoardX; j <= MaxBoardX; j += 0.5f)
             {
                 var posX = j;
                 var position = new Vector2(posX, posY);
@@ -102,28 +103,30 @@ public class GameManager : MonoBehaviour
     {
         TakePositionForSpawnApple();
 
-        var aplle = Instantiate(_applePrefub, _positionsForSpawnApple, Quaternion.identity);
-        aplle.transform.SetParent(_boardSpawn.transform, false);
+        var apple = Instantiate(_applePrefub, _positionsForSpawnApple, Quaternion.identity);
+        apple.transform.SetParent(_boardSpawn.transform, false);
 
         _counterApples++;
     }
 
-    public void SpawnApples()
+    private void SpawnApples()
     {
         if(_counterApples == 0)
         {
             SpawnOneApple();
         }
 
-        if (Random.Range(0, 5) == 0 && _counterApples < 2)
+        if (Random.Range(0, 1f) == DropPercentage && _counterApples < 2)
         {
             SpawnOneApple();
         }
     }
-
+   
     public void AppleWasDestroyed()
     {
         _counterApples--;
+
+        SpawnApples();
     }
 
     public void IncreaseScore()
@@ -133,20 +136,20 @@ public class GameManager : MonoBehaviour
         _scoreText.text = _score.ToString();
     }
 
-    public void ActivateMenuForRestart()
+    public void GameOver()
     {
         _menuPanel.SetActive(true);
         _gameOverText.SetActive(true);
         _gameIsPlaying = false;
-
-        Time.timeScale = 0;
+        _isPaused = true;
     }
 
     public void PressStartButton()
     {
-        Time.timeScale = 1;
+        _isPaused = false;
         _menuPanel.SetActive(false);
         _gameOverText.SetActive(false);
+
 
         if (!_gameIsPlaying)
         {

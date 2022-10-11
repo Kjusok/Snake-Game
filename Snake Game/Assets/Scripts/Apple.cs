@@ -7,14 +7,22 @@ public class Apple : MonoBehaviour
 
     private float _timerForDestroy;
 
+    private const float DestroyTime = 10f;
+    private const float AnimationTime = 4f;
+
 
     private void Start()
     {
-        _timerForDestroy = 10;
+        _timerForDestroy = DestroyTime;
     }
 
     private void Update()
     {
+        if (GameManager.Instance.GameIsPaused)
+        {
+            return;
+        }
+
         if (_timerForDestroy > 0)
         {
             _timerForDestroy -= Time.deltaTime;
@@ -23,7 +31,8 @@ public class Apple : MonoBehaviour
         {
             AppleDestroy();
         }
-        if (_timerForDestroy < 4)
+
+        if (_timerForDestroy < AnimationTime)
         {
             _animAlarm.SetTrigger("Alarm");
         }
@@ -36,17 +45,16 @@ public class Apple : MonoBehaviour
 
     private void AppleDestroy()
     {
-        SpaenDeathEffect();
+        SpawnDeathEffect();
+
         GameManager.Instance.AppleWasDestroyed();
         Destroy(gameObject);
-
-        GameManager.Instance.SpawnApples();
     }
 
-    private void SpaenDeathEffect()
+    private void SpawnDeathEffect()
     {
-        var apllePosition = transform.position;
-        var spawnPosition = new Vector2(apllePosition.x, apllePosition.y);
+        var applePosition = transform.position;
+        var spawnPosition = new Vector2(applePosition.x, applePosition.y);
 
         var deathEffect = Instantiate(_deathEffect.gameObject, spawnPosition, Quaternion.identity);
 
